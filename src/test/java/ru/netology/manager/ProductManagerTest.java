@@ -1,7 +1,9 @@
 package ru.netology.manager;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.netology.exception.NotFoundException;
 import ru.netology.product.Book;
 import ru.netology.product.Product;
 import ru.netology.product.Smartphone;
@@ -42,62 +44,64 @@ class ProductManagerTest {
         manager.add(product11);
     }
 
+
     @Test
+    void searchByBrand() {
+        Product[] expected = {new Smartphone(9, "Lenovo K9", 8990, "Lenovo")};
+        Product[] actual = manager.searchBy("Lenovo");
 
-    void searchByBrand(){
-        Product[]expected = {new Smartphone(9,"Lenovo K9", 8990,"Lenovo")};
-        Product[]actual = manager.searchBy("Lenovo");
-
-        assertArrayEquals(expected,actual);
+        assertArrayEquals(expected, actual);
     }
 
     @Test
-    void searchBySmartphoneName(){
-        Product[]actual = manager.searchBy("Redmi 5Plus");
-        Product[]expected = {new Smartphone(7, "Redmi 5Plus", 12990,"Redmi")};
-        assertArrayEquals(expected,actual);
+    void searchBySmartphoneName() {
+        Product[] actual = manager.searchBy("Redmi 5Plus");
+        Product[] expected = {new Smartphone(7, "Redmi 5Plus", 12990, "Redmi")};
+        assertArrayEquals(expected, actual);
     }
 
     @Test
-    void searchByBookName(){
-        Product[]actual = manager.searchBy("Чапаев и Пустота");
-        Product[]excepted = {new Book(3, "Чапаев и Пустота", 1500, "Виктор Пелевин")};
+    void searchByBookName() {
+        Product[] actual = manager.searchBy("Чапаев и Пустота");
+        Product[] excepted = {new Book(3, "Чапаев и Пустота", 1500, "Виктор Пелевин")};
         assertArrayEquals(excepted, actual);
     }
 
     @Test
-    void searchByAuthor(){
-        Product[]actual =manager.searchBy("Виктор Пелевин");
-        Product[]expected = {
+    void searchByAuthor() {
+        Product[] actual = manager.searchBy("Виктор Пелевин");
+        Product[] expected = {
                 new Book(1, "Empire V", 750, "Виктор Пелевин"),
                 new Book(2, "S.N.U.F.F", 520, "Виктор Пелевин"),
                 new Book(3, "Чапаев и Пустота", 1500, "Виктор Пелевин"),
                 new Book(4, "Бэтман Аполло", 700, "Виктор Пелевин"),
                 new Book(5, "Ананасная вода для прекрасной дамы", 265, "Виктор Пелевин"),
                 new Book(6, "Generation P", 750, "Виктор Пелевин")};
-        assertArrayEquals(expected,actual);
+        assertArrayEquals(expected, actual);
     }
 
     @Test
-    void searchByIncorrectBrand(){
-        Product[]actual = manager.searchBy("Самсунг");
-        Product[]expected = {};
-        assertArrayEquals(expected,actual);
+    void searchByIncorrectBrand() {
+        Product[] actual = manager.searchBy("Самсунг");
+        Product[] expected = {};
+        assertArrayEquals(expected, actual);
     }
 
     @Test
-    void searchByIncorrectAuthor(){
-        Product[]actual = manager.searchBy("Виктор Сорокин");
-        Product[]expected = {};
-        assertArrayEquals(expected,actual);
+    void searchByIncorrectAuthor() {
+        Product[] actual = manager.searchBy("Виктор Сорокин");
+        Product[] expected = {};
+        assertArrayEquals(expected, actual);
     }
 
+    // Тесты репозитория
+
     @Test
-    void shouldRemoveById(){
+    void shouldRemoveById() {
 
         repository.removeById(2);
-        Product[]actual = repository.findAll();
-        Product[]expected = {
+        Product[] actual = repository.findAll();
+        Product[] expected = {
                 new Book(1, "Empire V", 750, "Виктор Пелевин"),
                 new Book(3, "Чапаев и Пустота", 1500, "Виктор Пелевин"),
                 new Book(4, "Бэтман Аполло", 700, "Виктор Пелевин"),
@@ -109,8 +113,14 @@ class ProductManagerTest {
                 new Smartphone(10, "Iphone SE 2020", 49990, "Apple"),
                 new Smartphone(11, "Gnusmas Galaxy Fold", 224990, "Samsung")
         };
-        assertArrayEquals(expected,actual);
+        assertArrayEquals(expected, actual);
     }
 
+    @Test
+    void RemoveByNonExistentId() throws NotFoundException {
 
+        Assertions.assertThrows(NotFoundException.class, () -> repository.removeById(222));
+
+
+    }
 }
